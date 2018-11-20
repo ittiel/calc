@@ -7,7 +7,6 @@ pipeline {
                 git url: 'https://github.com/ittiel/calc.git'
             }
         }
-
         stage('Build') {
             steps {
                 echo 'Compiling'
@@ -20,16 +19,34 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage ('Codee Quality'){
+        stage ('Code Quality'){
             steps {
-                echo 'sonarcube'
-                echo 'findbug'
+                echo 'Todo: sonarcube'
+                echo 'Todo: Quality and security plugins (FindBugs, CheckMarx, etc.'
+            }
+        }
+        stage('Release') {
+            steps {
+                echo 'Releasing'
+                sh ' mvn -B release:clean release:prepare release:perform -DdryRun=true'
+                //running un dryrun since their are ni credentials set on the jenkins machine, so this will fail
+                //sh 'mvn -B release:clean release:prepare release:perform'
+            }
+        }
+        stage('DeplCreate testing env') {
+            steps {
+                echo 'Todo: Creating env'
             }
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying....'
+                echo 'Todo: Deploying env'
             }
         }
+        stage('Integration/System tests') {
+            steps {
+                echo 'Todo: Testing'
+            }
+        }       
     }
 }
