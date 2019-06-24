@@ -13,30 +13,48 @@ pipeline {
                 sh 'mvn clean compile'
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Unit testing'
-                sh 'mvn test'
+
+        stage('Quality') {
+
+            parallel {
+                stage('Test') {
+
+                    steps {
+                        echo 'Unit testing'
+                        sh 'mvn test'
+                    }
+                 }
+                stage ('Code Quality - SonarQube'){
+                    steps {
+                        echo 'Todo: sonarcube'
+                        echo 'Todo: Quality and security plugins (FindBugs, CheckMarx, etc.'
+                    }
+                }
+                stage ('Code Quality - CheckMarx'){
+                    steps {
+                        echo 'Todo: Quality and security plugins (FindBugs, CheckMarx, etc.'
+                    }
+                }
+
             }
         }
-        stage ('Code Quality'){
-            steps {
-                echo 'Todo: sonarcube'
-                echo 'Todo: Quality and security plugins (FindBugs, CheckMarx, etc.'
-            }
-        }
-        stage('Release') {
-            steps {
-                echo 'Releasing'
-                sh ' mvn -B release:clean release:prepare release:perform -DdryRun=true'
-                //running un dryrun since their are ni credentials set on the jenkins machine, so this will fail
-                //sh 'mvn -B release:clean release:prepare release:perform'
-            }
-        }
-        stage('DeplCreate testing env') {
-            steps {
-                echo 'Todo: Creating env'
-            }
+        stage ('prepare-release'){
+
+                parallel {
+                    stage('Release') {
+                        steps {
+                            echo 'Releasing'
+                            sh ' mvn -B release:clean release:prepare release:perform -DdryRun=true'
+                            //running un dryrun since their are ni credentials set on the jenkins machine, so this will fail
+                            //sh 'mvn -B release:clean release:prepare release:perform'
+                        }
+                    }
+                    stage('Create testing env') {
+                        steps {
+                            echo 'Todo: Creating env'
+                        }
+                    }
+                }
         }
         stage('Deploy') {
             steps {
@@ -50,3 +68,7 @@ pipeline {
         }       
     }
 }
+
+
+
+
